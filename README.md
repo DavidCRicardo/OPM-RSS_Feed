@@ -13,16 +13,17 @@ Everything should work, but there may still be small adjustments in the coming d
 `https://gist.githubusercontent.com/DavidCRicardo/967231f4956d3020daa84f7f70830b51/raw/432c7d3e6749498df0c4534deb7ceda2242269d6/opm.rss`
 
 **Codeberg:**  
-Soon
+Soon (There are plans to share there as well)
 
 ---
 
 ### How to Subscribe (Thunderbird example)
 
-1. Open Thunderbird  
-2. **File → New → Feed**  
-3. Paste the permanent RSS URL above  
-4. Click Subscribe  
+1. Open Thunderbird
+2. Create a Feed Acount, if you don't have one
+3. Click Subscribe  
+4. Paste the permanent RSS URL above  
+5. Click Add  
 
 New chapters will appear automatically every time a new One Punch Man chapter is released.
 
@@ -39,7 +40,7 @@ New chapters will appear automatically every time a new One Punch Man chapter is
 
 ### Status
 - **Testing Phase** – started March 2026  
-- JSON source: Your personal Gist (https://gist.github.com/DavidCRicardo/967231f4956d3020daa84f7f70830b51)  
+- JSON source: Personal Gist (https://gist.github.com/DavidCRicardo/967231f4956d3020daa84f7f70830b51)  
 - Fully under your control  
 - No dependency on external people
 
