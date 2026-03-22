@@ -109,7 +109,7 @@ def json_to_rss(json_data: dict) -> str:
     return doc.toprettyxml(indent="  ")
 
 # ====================== GENERATE ======================
-url = ""https://gist.githubusercontent.com/DavidCRicardo/967231f4956d3020daa84f7f70830b51/raw"
+url = "https://gist.githubusercontent.com/DavidCRicardo/967231f4956d3020daa84f7f70830b51/raw"
 response = requests.get(url)
 response.raise_for_status()
 data = response.json()
