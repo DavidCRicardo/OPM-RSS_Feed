@@ -15,7 +15,7 @@ def json_to_rss(json_data: dict) -> str:
     for tag, text in [
         ("title", "One Punch Man (Cubari Reader)"),
         ("link", "https://cubari.moe/read/gist/Z2lzdC9mdW5reWhpcHBvLzFkNDBiZDVkYWUxMWUwM2E2YWYyMGU1YTlhMDMwZDgxL3Jhdy9vcG0uanNvbg/"),
-        ("description", "One Punch Man chapters – clean view"),
+        ("description", "One Punch Man chapters"),
         ("lastBuildDate", datetime.now(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT")),
     ]:
         elem = doc.createElement(tag)
@@ -60,7 +60,7 @@ def json_to_rss(json_data: dict) -> str:
         ).strftime('%Y-%m-%d')
 
         html = f"""
-        <img src="{first_image}" alt="Chapter cover" style="max-width:100%; height:auto; display:block; margin:0 auto 15px;" />
+        <img src="{first_image}" alt="Chapter cover goes here. But something went wrong :(" style="max-width:100%; height:auto; display:block; margin:0 auto 15px;" />
         <strong>Volume:</strong> {chap_data.get('volume', 'N/A')}<br/>
         <strong>Pages:</strong> {num_pages}<br/>
         <strong>Updated:</strong> {updated_date}<br/><br/>
@@ -85,7 +85,7 @@ def json_to_rss(json_data: dict) -> str:
     return doc.toprettyxml(indent="  ")
 
 # ====================== GIST ======================
-url = "https://gist.githubusercontent.com/DavidCRicardo/967231f4956d3020daa84f7f70830b51/raw"
+url = "https://gist.githubusercontent.com/funkyhippo/1d40bd5dae11e03a6af20e5a9a030d81/raw/opm.json"
 
 response = requests.get(url)
 response.raise_for_status()
