@@ -10,10 +10,7 @@ Everything should work, but there may still be small adjustments in the coming d
 ### 📡 Permanent RSS Feed URL
 
 **GitHub:**  
-`https://gist.githubusercontent.com/DavidCRicardo/967231f4956d3020daa84f7f70830b51/raw/432c7d3e6749498df0c4534deb7ceda2242269d6/opm.rss`
-
-**Codeberg:**  
-Soon (There are plans to share there as well)
+`[Raw URL](https://raw.githubusercontent.com/DavidCRicardo/OPM-RSS_Feed/main/opm.rss)`
 
 ---
 
@@ -34,20 +31,18 @@ New chapters will appear automatically every time a new One Punch Man chapter is
 - Direct link to Cubari.moe reader
 - Proper dates and chapter info
 - Newest chapters on top
-- Fully automatic (GitHub Actions / Codeberg runs every 6 hours)
+- Fully automatic (GitHub Actions runs every 6 hours)
 
 ---
 
 ### Status
 - **Testing Phase** – started March 2026  
-- JSON source: Personal Gist (https://gist.github.com/DavidCRicardo/967231f4956d3020daa84f7f70830b51)  
-- Fully under your control  
-- No dependency on external people
+- Dependency to [FunkyHippo Raw](https://gist.githubusercontent.com/funkyhippo/1d40bd5dae11e03a6af20e5a9a030d81/raw/opm.json)
 
 ---
 
 ### Feedback / Issues
-If anything looks wrong in Thunderbird (duplicate images, missing covers, etc.), just open an issue here or reply in our original chat.
+If anything looks wrong in Thunderbird (duplicate images, missing covers, etc.), just open an issue here.
 
 Thank you for testing! 🥊
 
