@@ -1,59 +1,47 @@
 import json
 import requests
-from xml.dom.minidom import Document
+from xml.etree.ElementTree import Element, SubElement, tostring
+from xml.dom import minidom
 from datetime import datetime, timezone
 
-def generate_rss(json_data: dict) -> str:
-    doc = Document()
-    rss = doc.createElement("rss")
-    rss.setAttribute("version", "2.0")
-    rss.setAttribute("xmlns:atom", "http://www.w3.org/2005/Atom")
-    doc.appendChild(rss)
+def prettify(elem):
+    """Pretty-print XML with minidom"""
+    rough = tostring(elem, encoding="utf-8")
+    parsed = minidom.parseString(rough)
+    return parsed.toprettyxml(indent="  ")
 
-    channel = doc.createElement("channel")
-    rss.appendChild(channel)
+def json_to_rss(json_data: dict) -> str:
+    rss = Element("rss", {"version": "2.0"})
+    rss.set("xmlns:atom", "http://www.w3.org/2005/Atom")
 
-    for tag, text in [
-        ("title", "One Punch Man (Cubari Reader)"),
-        ("link", "https://cubari.moe/read/gist/Z2lzdC9mdW5reWhpcHBvLzFkNDBiZDVkYWUxMWUwM2E2YWYyMGU1YTlhMDMwZDgxL3Jhdy9vcG0uanNvbg/"),
-        ("description", "One Punch Man chapters"),
-        ("lastBuildDate", datetime.now(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT")),
-    ]:
-        elem = doc.createElement(tag)
-        elem.appendChild(doc.createTextNode(text))
-        channel.appendChild(elem)
+    channel = SubElement(rss, "channel")
 
-    atom_link = doc.createElement("atom:link")
-    atom_link.setAttribute("rel", "self")
-    atom_link.setAttribute("href", "https://raw.githubusercontent.com/DavidCRicardo/OPM-RSS_Feed/main/opm.rss")
-    atom_link.setAttribute("type", "application/rss+xml")
-    channel.appendChild(atom_link)
-    
+    SubElement(channel, "title").text = "One Punch Man (Cubari Reader)"
+    SubElement(channel, "link").text = "https://cubari.moe/read/gist/Z2lzdC9mdW5reWhpcHBvLzFkNDBiZDVkYWUxMWUwM2E2YWYyMGU1YTlhMDMwZDgxL3Jhdy9vcG0uanNvbg/"
+    SubElement(channel, "description").text = "One Punch Man chapters"
+    SubElement(channel, "lastBuildDate").text = datetime.now(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT")
+
+    atom_link = SubElement(channel, "atom:link")
+    atom_link.set("rel", "self")
+    atom_link.set("href", "https://raw.githubusercontent.com/DavidCRicardo/OPM-RSS_Feed/main/opm.rss")
+    atom_link.set("type", "application/rss+xml")
+
     cubari_base = "https://cubari.moe/read/gist/Z2lzdC9mdW5reWhpcHBvLzFkNDBiZDVkYWUxMWUwM2E2YWYyMGU1YTlhMDMwZDgxL3Jhdy9vcG0uanNvbg/"
 
     chapters = json_data.get("chapters", {})
-    def num_key(item):
-        try:
-            return float(item[0])
-        except:
-            return 0
-
-    sorted_chapters = sorted(chapters.items(), key=num_key, reverse=True)
+    sorted_chapters = sorted(chapters.items(), key=lambda x: float(x[0]), reverse=True)
 
     for chap_num, chap_data in sorted_chapters:
-        item = doc.createElement("item")
-        channel.appendChild(item)
+        item = SubElement(channel, "item")
 
-        title = doc.createElement("title")
-        title.appendChild(doc.createTextNode(f"Chapter {chap_num}: {chap_data.get('title', 'Untitled')}"))
-        item.appendChild(title)
+        title_text = chap_data.get('title', f"Chapter {chap_num}")
+        SubElement(item, "title").text = title_text
 
         slug = chap_num.replace('.', '-')
         chapter_url = f"{cubari_base}{slug}/1/"
-        link_elem = doc.createElement("link")
-        link_elem.appendChild(doc.createTextNode(chapter_url))
-        item.appendChild(link_elem)
+        SubElement(item, "link").text = chapter_url
 
+        # First image
         first_image = ""
         groups = chap_data.get("groups", {})
         if groups:
@@ -67,40 +55,34 @@ def generate_rss(json_data: dict) -> str:
         ).strftime('%Y-%m-%d')
 
         html = f"""
-        <img src="{first_image}" alt="Chapter cover goes here. But something went wrong :("/>
-        <strong>Volume:</strong> {chap_data.get('volume', 'N/A')}<br/>
-        <strong>Pages:</strong> {num_pages}<br/>
-        <strong>Updated:</strong> {updated_date}<br/><br/>
-        <a href="{chapter_url}">🔗 Open full chapter in Cubari reader</a>
+<img src="{first_image}" alt="Chapter {chap_num} cover" />
+<strong>Volume:</strong> {chap_data.get('volume', 'N/A')}<br/>
+<strong>Pages:</strong> {num_pages}<br/>
+<strong>Updated:</strong> {updated_date}<br/><br/>
+<a href="{chapter_url}">🔗 Open full chapter in Cubari reader</a>
         """.strip()
 
-        desc = doc.createElement("description")
-        desc.appendChild(doc.createCDATASection(html))
-        item.appendChild(desc)
+        desc = SubElement(item, "description")
+        desc.text = html  # CDATA is handled automatically by ElementTree
 
+        # PubDate + GUID
         if isinstance(chap_data.get("last_updated"), (int, float)):
             dt = datetime.fromtimestamp(chap_data["last_updated"], tz=timezone.utc)
-            pubdate = doc.createElement("pubDate")
-            pubdate.appendChild(doc.createTextNode(dt.strftime("%a, %d %b %Y %H:%M:%S GMT")))
-            item.appendChild(pubdate)
+            SubElement(item, "pubDate").text = dt.strftime("%a, %d %b %Y %H:%M:%S GMT")
 
-        guid = doc.createElement("guid")
-        guid.setAttribute("isPermaLink", "false")
-        guid.appendChild(doc.createTextNode(f"opm-{chap_num}"))
-        item.appendChild(guid)
+        guid = SubElement(item, "guid")
+        guid.set("isPermaLink", "false")
+        guid.text = f"opm-{chap_num}"
 
-    return doc.toprettyxml(indent="  ")
+    return prettify(rss)
 
-# ====================== GIST ======================
+
+# ====================== GENERATE ======================
 url = "https://gist.githubusercontent.com/funkyhippo/1d40bd5dae11e03a6af20e5a9a030d81/raw/opm.json"
-
 response = requests.get(url)
 response.raise_for_status()
 data = response.json()
 
-rss_output = generate_rss(data)
-
-with open("opm.rss", "w", encoding="utf-8") as f:
-    f.write(rss_output)
+rss_output = json_to_rss(data)
 
 print("✅ RSS generated from your Gist")
