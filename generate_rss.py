@@ -63,7 +63,7 @@ def json_to_rss(json_data: dict) -> str:
         """.strip()
 
         desc = SubElement(item, "description")
-        desc.text = html  # CDATA is handled automatically by ElementTree
+        desc.text = html 
 
         # PubDate + GUID
         if isinstance(chap_data.get("last_updated"), (int, float)):
@@ -77,7 +77,7 @@ def json_to_rss(json_data: dict) -> str:
     return prettify(rss)
 
 
-# ====================== GENERATE ======================
+# ====================== GIST ======================
 url = "https://gist.githubusercontent.com/funkyhippo/1d40bd5dae11e03a6af20e5a9a030d81/raw/opm.json"
 response = requests.get(url)
 response.raise_for_status()
@@ -85,4 +85,7 @@ data = response.json()
 
 rss_output = json_to_rss(data)
 
+with open("opm.rss", "w", encoding="utf-8") as f:
+    f.write(rss_output)
+    
 print("✅ RSS generated from your Gist")
