@@ -7,6 +7,7 @@ def json_to_rss(json_data: dict) -> str:
     doc = Document()
     rss = doc.createElement("rss")
     rss.setAttribute("version", "2.0")
+    rss.setAttribute("xmlns:atom", "http://www.w3.org/2005/Atom")
     doc.appendChild(rss)
 
     channel = doc.createElement("channel")
@@ -22,6 +23,12 @@ def json_to_rss(json_data: dict) -> str:
         elem.appendChild(doc.createTextNode(text))
         channel.appendChild(elem)
 
+    atom_link = doc.createElementNS("http://www.w3.org/2005/Atom", "atom:link")
+    atom_link.setAttribute("rel", "self")
+    atom_link.setAttribute("href", "https://raw.githubusercontent.com/DavidCRicardo/OPM-RSS_Feed/main/opm.rss")
+    atom_link.setAttribute("type", "application/rss+xml")
+    channel.appendChild(atom_link)
+    
     cubari_base = "https://cubari.moe/read/gist/Z2lzdC9mdW5reWhpcHBvLzFkNDBiZDVkYWUxMWUwM2E2YWYyMGU1YTlhMDMwZDgxL3Jhdy9vcG0uanNvbg/"
 
     chapters = json_data.get("chapters", {})
@@ -60,7 +67,7 @@ def json_to_rss(json_data: dict) -> str:
         ).strftime('%Y-%m-%d')
 
         html = f"""
-        <img src="{first_image}" alt="Chapter cover goes here. But something went wrong :(" style="max-width:100%; height:auto; display:block; margin:0 auto 15px;" />
+        <img src="{first_image}" alt="Chapter cover goes here. But something went wrong :("/>
         <strong>Volume:</strong> {chap_data.get('volume', 'N/A')}<br/>
         <strong>Pages:</strong> {num_pages}<br/>
         <strong>Updated:</strong> {updated_date}<br/><br/>
