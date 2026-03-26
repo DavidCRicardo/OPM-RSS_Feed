@@ -3,7 +3,7 @@ import requests
 from xml.dom.minidom import Document
 from datetime import datetime, timezone
 
-def json_to_rss(json_data: dict) -> str:
+def generate_rss(json_data: dict) -> str:
     doc = Document()
     rss = doc.createElement("rss")
     rss.setAttribute("version", "2.0")
@@ -23,7 +23,7 @@ def json_to_rss(json_data: dict) -> str:
         elem.appendChild(doc.createTextNode(text))
         channel.appendChild(elem)
 
-    atom_link = doc.createElementNS("http://www.w3.org/2005/Atom", "atom:link")
+    atom_link = doc.createElement("atom:link")
     atom_link.setAttribute("rel", "self")
     atom_link.setAttribute("href", "https://raw.githubusercontent.com/DavidCRicardo/OPM-RSS_Feed/main/opm.rss")
     atom_link.setAttribute("type", "application/rss+xml")
@@ -98,7 +98,7 @@ response = requests.get(url)
 response.raise_for_status()
 data = response.json()
 
-rss_output = json_to_rss(data)
+rss_output = generate_rss(data)
 
 with open("opm.rss", "w", encoding="utf-8") as f:
     f.write(rss_output)
