@@ -18,7 +18,7 @@ print("🔄 Starting update...")
 weeb = Weeb()
 
 # 1. Search
-search_results = weeb.search(query="One-Punch Man")
+search_results = weeb.search(query="Solo Leveling")
 if not search_results:
     print("❌ No results found.")
     exit(1)
