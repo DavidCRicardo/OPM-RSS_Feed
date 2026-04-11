@@ -23,7 +23,7 @@ from enums import (
 from ua_generator import generate
 from typing import List, Dict, Optional, Any
 from bs4 import BeautifulSoup
-import requests, time, random, io, os, re
+import requests, time, random, io, os
 from fpdf import FPDF
 from PIL import Image
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -335,14 +335,17 @@ class Weeb(Network):
         Example:
         https://weebcentral.com/series/01J76XY7KT7J224EBK6J816Y1Q/Onepunch-Man
         """
-        pattern = r"/series/([^/]+)/([^/]+)"
-        match = re.search(pattern, url)
-
-        if not match:
+        parts = url.strip("/").split("/")
+        # Expected: ["https:", "", "weebcentral.com", "series", "<ID>", "<SLUG>"]
+        try:
+            series_index = parts.index("series")
+            series_id = parts[series_index + 1]
+            slug = parts[series_index + 2]
+        except (ValueError, IndexError):
             raise ParsingError(f"Invalid WeebCentral series URL: {url}")
 
-        series_id, slug = match.groups()
-        return Manga(series_id, slug, slug, self.session)
+        full_url = f"https://weebcentral.com/series/{series_id}/{slug}"
+        return Manga(full_url, slug)
 
 class Manga(Network):
     """Represents a single manga series, providing methods to fetch its details and chapters.
