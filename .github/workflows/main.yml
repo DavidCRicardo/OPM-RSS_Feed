@@ -25,19 +25,19 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install dependencies
-        run: pip install requests beautifulsoup4 Pillow fpdf2 ua-generator
+      - name: Install requests
+        run: pip install requests
 
-      - name: Run update script
+      - name: Generate fresh opm.rss
         run: python generate_rss.py
 
       - name: Commit & push if changed
         run: |
           git config user.name "OPM Auto Bot"
           git config user.email "bot@noreply.com"
-          git add opm_weebcentral.json opm.rss
+          git add opm.rss
           if git diff --staged --quiet; then
-            echo "No new chapters - nothing to commit"
+            echo "No changes to commit"
           else
             git commit -m "Auto-update: new One Punch Man chapter(s)"
             git push
