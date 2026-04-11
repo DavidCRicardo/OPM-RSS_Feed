@@ -25,33 +25,6 @@ jobs:
         with:
           python-version: '3.12'
 
-      name: Auto-update One Punch Man RSS
-
-on:
-  schedule:
-    - cron: '0 */6 * * *'
-  workflow_dispatch:
-
-permissions:
-  contents: write
-  
-jobs:
-  update:
-    runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: main
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
       - name: Clone Weeb-dl and copy weeb folder
         run: |
           git clone https://github.com/UnKnowNModder/Weeb-dl.git /tmp/Weeb-dl
