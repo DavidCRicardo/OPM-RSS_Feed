@@ -25,6 +25,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 Pillow fpdf2 ua-generator
+
       - name: Run update script
         run: python generate_rss.py
 
