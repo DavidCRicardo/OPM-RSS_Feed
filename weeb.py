@@ -23,7 +23,7 @@ from enums import (
 from ua_generator import generate
 from typing import List, Dict, Optional, Any
 from bs4 import BeautifulSoup
-import requests, time, random, io, os
+import requests, time, random, io, os, re
 from fpdf import FPDF
 from PIL import Image
 from concurrent.futures import ThreadPoolExecutor, as_completed
