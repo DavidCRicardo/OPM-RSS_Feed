@@ -32,7 +32,9 @@ jobs:
           echo "Weeb-dl folder copied successfully"
 
       - name: Run update script
-        run: python generate_rss.py
+        run: |
+          export PYTHONPATH=$(pwd):$PYTHONPATH      # ← This fixes the import
+          python generate_rss.py
 
       - name: Commit & push if changed
         run: |
