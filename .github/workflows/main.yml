@@ -25,12 +25,6 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Clone Weeb-dl and copy weeb folder
-        run: |
-          git clone https://github.com/UnKnowNModder/Weeb-dl.git /tmp/Weeb-dl
-          cp -r /tmp/Weeb-dl-master/weeb .
-          echo "Weeb-dl folder copied successfully"
-
       - name: Run update script
         run: python generate_rss.py
 
