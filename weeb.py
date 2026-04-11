@@ -83,7 +83,7 @@ class Network:
 
     MAX_RETRIES = 3
     TIMEOUT = 60  # seconds
-    BASE_URL = "https://weebcentral.com"
+    BASE_URL = "https://central.com"
 
     def __init__(self) -> None:
         """Initializes a requests.Session for making persistent HTTP requests."""
@@ -162,8 +162,8 @@ class Network:
             return False
 
 
-class Weeb(Network):
-    """Provides high-level methods to interact with WeebCentral.com.
+class (Network):
+    """Provides high-level methods to interact with Central.com.
 
     Inherits network functionality from the Network class and handles searching,
     fetching new series, and retrieving hot/trending manga.
@@ -184,7 +184,7 @@ class Weeb(Network):
         type: Optional[List[SeriesType]] = [],
         genre: Optional[List[Genre]] = [],
     ) -> List[Manga]:
-        """Searches for manga on WeebCentral with various filtering options.
+        """Searches for manga on Central with various filtering options.
 
         Results are cached based on search parameters to speed up repeated queries.
 
@@ -329,6 +329,20 @@ class Weeb(Network):
             data[manga] = chapter
         return data
 
+    def from_url(self, url: str):
+        """
+        Create a Manga object directly from a WeebCentral series URL.
+        Example:
+        https://weebcentral.com/series/01J76XY7KT7J224EBK6J816Y1Q/Onepunch-Man
+        """
+        pattern = r"/series/([^/]+)/([^/]+)"
+        match = re.search(pattern, url)
+
+        if not match:
+            raise ParsingError(f"Invalid WeebCentral series URL: {url}")
+
+        series_id, slug = match.groups()
+        return Manga(series_id, slug, slug, self.session)
 
 class Manga(Network):
     """Represents a single manga series, providing methods to fetch its details and chapters.
