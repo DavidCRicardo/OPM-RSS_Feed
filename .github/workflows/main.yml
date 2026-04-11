@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: weeb-central-test #main
+          ref: main
 
       - name: Set up Python
         uses: actions/setup-python@v5
