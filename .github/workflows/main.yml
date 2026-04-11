@@ -26,10 +26,8 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: |
-          pip install requests beautifulsoup4 Pillow fpdf2 ua-generator
-          pip install -e ./weeb  # Install the local weeb module
-
+        run: pip install requests beautifulsoup4 Pillow fpdf2 ua-generator
+        
       - name: Generate fresh opm.rss
         run: python generate_rss.py
 
