@@ -162,7 +162,7 @@ class Network:
             return False
 
 
-class (Network):
+class Weeb(Network):
     """Provides high-level methods to interact with Central.com.
 
     Inherits network functionality from the Network class and handles searching,
