@@ -123,28 +123,35 @@ class Network:
                 time.sleep(random.uniform(0.5, 1))
 
     def create_soup(self, url: str, params: dict = {}) -> BeautifulSoup:
-        """Fetches a webpage and parses it into a BeautifulSoup object.
+    """Fetches a webpage and parses it into a BeautifulSoup object.
 
-        Args:
-                        url: The target URL to scrape.
-                        params: Optional dictionary of query parameters.
+    Args:
+        url: The target URL to scrape.
+        params: Optional dictionary of query parameters.
 
-        Returns:
-                        A BeautifulSoup object of the page's HTML content.
+    Returns:
+        A BeautifulSoup object of the page's HTML content.
 
-        Raises:
-                        ParsingError: If fetching or parsing the HTML fails.
-        """
-        try:
-            headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-            }
-            response = requests.get(url, params=params, headers=headers)
-            response.raise_for_status()
-           
-            return BeautifulSoup(response.text, "html.parser")
-        except Exception as e:
-            raise ParsingError(f"Failed to parse html from {url} due to: {e}")
+    Raises:
+        ParsingError: If fetching or parsing the HTML fails.
+    """
+    try:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Referer": "https://weebcentral.com/",
+            "DNT": "1",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+        }
+        session = requests.Session()
+        response = session.get(url, params=params, headers=headers)
+        response.raise_for_status()  # Raises an error for bad status codes (e.g., 403)
+        return BeautifulSoup(response.text, "html.parser")
+    except Exception as e:
+        raise ParsingError(f"Failed to parse html from {url} due to: {e}")
 
     def thread(self, funcs, max_workers: int = 15) -> bool:
         """Executes a list of functions concurrently using a thread pool.
