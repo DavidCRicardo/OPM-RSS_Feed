@@ -25,19 +25,49 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install requests
-        run: pip install requests
+      name: Auto-update One Punch Man RSS
 
-      - name: Generate fresh opm.rss
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Clone Weeb-dl and copy weeb folder
+        run: |
+          git clone https://github.com/UnKnowNModder/Weeb-dl.git /tmp/Weeb-dl
+          cp -r /tmp/Weeb-dl/weeb .
+          echo "Weeb-dl folder copied successfully"
+
+      - name: Run update script
         run: python generate_rss.py
 
       - name: Commit & push if changed
         run: |
           git config user.name "OPM Auto Bot"
           git config user.email "bot@noreply.com"
-          git add opm.rss
+          git add opm_weebcentral.json opm.rss
           if git diff --staged --quiet; then
-            echo "No changes to commit"
+            echo "No new chapters - nothing to commit"
           else
             git commit -m "Auto-update: new One Punch Man chapter(s)"
             git push
