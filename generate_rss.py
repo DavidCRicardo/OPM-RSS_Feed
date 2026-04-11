@@ -18,7 +18,9 @@ print("🔄 Starting update...")
 weeb = Weeb()
 
 # 1. Search
-search_results = weeb.search(query="Solo Leveling")
+#search_results = weeb.search(query="One Punch Man")
+my_manga = weeb.from_url("https://weebcentral.com/series/01J76XY7KT7J224EBK6J816Y1Q/Onepunch-Man")
+
 if not search_results:
     print("❌ No results found.")
     exit(1)
