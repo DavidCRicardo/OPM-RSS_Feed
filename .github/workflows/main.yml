@@ -7,13 +7,13 @@ on:
 
 permissions:
   contents: write
-  
+
 jobs:
   update:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,8 +25,8 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install requests
-        run: pip install requests
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 Pillow fpdf2 ua-generator
 
       - name: Generate fresh opm.rss
         run: python generate_rss.py
@@ -35,9 +35,9 @@ jobs:
         run: |
           git config user.name "OPM Auto Bot"
           git config user.email "bot@noreply.com"
-          git add opm.rss
+          git add opm_weebcentral.json opm.rss
           if git diff --staged --quiet; then
-            echo "No changes to commit"
+            echo "No new chapters - nothing to commit"
           else
             git commit -m "Auto-update: new One Punch Man chapter(s)"
             git push
