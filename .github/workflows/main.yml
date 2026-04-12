@@ -28,7 +28,7 @@ jobs:
       - name: Clone Weeb-dl and copy weeb folder
         run: |
           git clone https://github.com/UnKnowNModder/Weeb-dl.git /tmp/Weeb-dl
-          cp -r /tmp/Weeb-dl/weeb .          # This creates the "weeb" folder in the repo root
+          cp -r /tmp/Weeb-dl/weeb_central . # This creates the "weeb_central" folder in the repo root
 
       - name: Install dependencies
         run: |
