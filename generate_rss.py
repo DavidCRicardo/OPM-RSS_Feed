@@ -1,4 +1,4 @@
-from weeb import Weeb, Manga, NetworkError, ParsingError
+from weeb_central import Weeb, Manga, NetworkError, ParsingError
 import json
 
 from xml.etree.ElementTree import Element, SubElement, tostring
