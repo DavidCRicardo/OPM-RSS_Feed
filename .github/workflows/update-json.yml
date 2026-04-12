@@ -27,6 +27,7 @@ jobs:
         run: |
           git clone https://github.com/UnKnowNModder/Weeb-dl.git /tmp/Weeb-dl
           cp -r /tmp/Weeb-dl/weeb weeb_central
+          touch weeb_central/__init__.py
           echo "✅ weeb_central folder prepared"
 
       - name: Install dependencies
