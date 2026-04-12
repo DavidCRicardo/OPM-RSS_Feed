@@ -88,6 +88,10 @@ class Network:
     def __init__(self) -> None:
         """Initializes a requests.Session for making persistent HTTP requests."""
         self.session = requests.Session()
+        self.session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+            "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+        })
 
     def get_response(self, url: str, params: dict = {}) -> requests.Response:
         """Fetches a URL with retries on failure.
