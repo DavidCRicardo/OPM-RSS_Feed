@@ -11,8 +11,6 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       
     steps:
       - name: Checkout repository
@@ -28,8 +26,8 @@ jobs:
       - name: Clone Weeb-dl and copy weeb folder
         run: |
           git clone https://github.com/UnKnowNModder/Weeb-dl.git /tmp/Weeb-dl
-          cp -r /tmp/Weeb-dl/weeb_central . # This creates the "weeb_central" folder in the repo root
-
+          cp -r /tmp/Weeb-dl/weeb .               # This creates the "weeb" folder
+          
       - name: Install dependencies
         run: |
           pip install requests beautifulsoup4 Pillow fpdf2 ua-generator
@@ -41,7 +39,7 @@ jobs:
         run: |
           git config user.name "OPM Auto Bot"
           git config user.email "bot@noreply.com"
-          git add opm.rss
+          git add opm_weebcentral.json opm.rss
           if git diff --staged --quiet; then
             echo "No new chapters - nothing to commit"
           else
