@@ -11,9 +11,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,21 +23,32 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Clone Weeb-dl and prepare weeb_central folder
+        run: |
+          git clone https://github.com/UnKnowNModder/Weeb-dl.git /tmp/Weeb-dl
+          cp -r /tmp/Weeb-dl/weeb weeb_central
+          touch weeb_central/__init__.py
+          echo "✅ weeb_central folder ready"
+
       - name: Install dependencies
         run: |
           pip install requests beautifulsoup4 Pillow fpdf2 ua-generator
 
-      - name: Generate fresh opm.rss
-        run: python generate_rss.py
+      - name: Run update_opm_rss.py
+        run: |
+          python update_opm_rss.py
 
-      - name: Commit & push if changed
+      - name: Commit and push if changed
         run: |
           git config user.name "OPM Auto Bot"
           git config user.email "bot@noreply.com"
-          git add opm.rss
+          git add opm_weebcentral.json opm.rss
           if git diff --staged --quiet; then
-            echo "No changes to commit"
+            echo "No new chapters - nothing to commit"
           else
+            git commit -m "Auto-update: new One Punch Man chapter(s)"
+            git push
+          fi
             git commit -m "Auto-update: new One Punch Man chapter(s)"
             git push
           fi
