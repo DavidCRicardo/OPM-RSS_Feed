@@ -215,41 +215,23 @@ def main() -> None:
         listing = fetch_chapter_list(ctx)
 
         # 3. Identify chapters that need detail fetching:
-        #    - chapters not yet in the DB, OR
-        #    - existing chapters whose cover_image is null (e.g. scraped before WeebCentral
-        #      added the <link rel="preload"> tag to older chapter pages)
-        new_chapters = [
-            ch for ch in listing
-            if ch["chapter_number"] not in chapters_db
-            or chapters_db.get(ch["chapter_number"], {}).get("cover_image") is None
-        ]
-        print(f"{len(new_chapters)} chapter(s) need detail fetching (new or missing cover).")
+        new_chapters = [ch for ch in listing if ch["chapter_number"] not in chapters_db]
+        print(f"{len(new_chapters)} new chapter(s) need detail fetching.")
 
-        # 4. Fetch details for new chapters (or existing ones missing a cover_image)
+        # 4. Fetch details for new chapters
         for i, ch in enumerate(new_chapters, 1):
             num = ch["chapter_number"]
-            is_existing = num in chapters_db
-            label = "cover fix" if is_existing else "new"
-            print(f"  [{i}/{len(new_chapters)}] Fetching details for Ch. {num} ({label}): {ch['title']} ...")
+            print(f"  [{i}/{len(new_chapters)}] Fetching details for Ch. {num}: {ch['title']} ...")
             details = fetch_chapter_details(ctx, ch["url"])
-            if is_existing:
-                # Only patch the fields we re-fetched; keep everything else intact
-                entry = chapters_db[num]
-                entry["cover_image"] = details["cover_image"]
-                if details["pages"] is not None:
-                    entry["pages"] = details["pages"]
-                if details["volume"] is not None:
-                    entry["volume"] = details["volume"]
-            else:
-                chapters_db[num] = {
-                    "title": ch["title"],
-                    "volume": details["volume"],
-                    "pages": details["pages"],
-                    "release_date": ch["release_date"],
-                    "last_updated": ch["last_updated"],
-                    "cover_image": details["cover_image"],
-                    "url": ch["url"],
-                }
+            chapters_db[num] = {
+                "title": ch["title"],
+                "volume": details["volume"],
+                "pages": details["pages"],
+                "release_date": ch["release_date"],
+                "last_updated": ch["last_updated"],
+                "cover_image": details["cover_image"],
+                "url": ch["url"],
+            }
             # Save incrementally so a crash doesn't lose progress
             save_json({"chapters": chapters_db})
             if i < len(new_chapters):
