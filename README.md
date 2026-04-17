@@ -1,51 +1,56 @@
-# One Punch Man – Cubari RSS Feed
+# One Punch Man – RSS Feed
 
 **⚠️ This repository is currently in TESTING PHASE ⚠️**
 
-The RSS feed is being auto-generated and tested.  
-Everything should work, but there may still be small adjustments in the coming days.
+Auto-generated RSS feed for One Punch Man, sourced directly from [WeebCentral](https://weebcentral.com/series/01J76XY7KT7J224EBK6J816Y1Q/Onepunch-Man). No third-party reader dependency.
+
+[![Auto-update One Punch Man RSS](https://github.com/DavidCRicardo/OPM-RSS_Feed/actions/workflows/main.yml/badge.svg)](https://github.com/DavidCRicardo/OPM-RSS_Feed/actions/workflows/main.yml)
 
 ---
 
-### 📡 Permanent RSS Feed URL
+### RSS Feed URL
 
-**GitHub:**  
-`[Raw URL](https://raw.githubusercontent.com/DavidCRicardo/OPM-RSS_Feed/main/opm.rss)`
+```
+https://raw.githubusercontent.com/DavidCRicardo/OPM-RSS_Feed/main/opm.rss
+```
 
 ---
 
-### How to Subscribe (Thunderbird example)
+### How to Subscribe
 
-1. Open Thunderbird
-2. Create a Feed Acount, if you don't have one
-3. Click Subscribe  
-4. Paste the permanent RSS URL above  
-5. Click Add  
+**Thunderbird:**
+1. Create a Feed Account if you don't have one
+2. Click Subscribe
+3. Paste the URL above
+4. Click Add
 
-New chapters will appear automatically every time a new One Punch Man chapter is released.
+New chapters appear automatically whenever a new One Punch Man chapter is released.
 
 ---
 
 ### Features
-- Clean chapter cover image (shows only once)
-- Direct link to Cubari.moe reader
-- Proper dates and chapter info
+
+- Chapter title in format `Ch. 228: Mag Version 228`
+- Cover image (first manga page) for every chapter
+- Release date, page count per chapter
 - Newest chapters on top
-- Fully automatic (GitHub Actions runs every 6 hours)
+- Links open the chapter page on WeebCentral
+- Fully automatic — GitHub Actions runs every 6 hours
+- Incremental updates — only new chapters are scraped on each run
 
 ---
 
 ### Status
-- **Testing Phase** – started March 2026  
-- Dependency to [FunkyHippo Raw](https://gist.githubusercontent.com/funkyhippo/1d40bd5dae11e03a6af20e5a9a030d81/raw/opm.json)
+
+- ~~**Test Completed** – sourced from Cubari from March 2026~~
+- **Testing Phase** — sourcing from WeebCentral since April 2026
+- 248 chapters tracked (Punch 1 through Mag Version 228, including decimal chapters)
+- No dependency on third-party JSON sources
 
 ---
 
 ### Feedback / Issues
-If anything looks wrong in Thunderbird (duplicate images, missing covers, etc.), just open an issue here.
 
-Thank you for testing! 🥊
-
----
+If anything looks wrong (missing covers, wrong dates, duplicate items), open an issue.
 
 *Made with ❤️ for One Punch Man fans*
