@@ -16,6 +16,14 @@ https://raw.githubusercontent.com/DavidCRicardo/OPM-RSS_Feed/main/opm.rss
 
 ---
 
+### Preview
+
+| Chapter list | Chapter open |
+|:---:|:---:|
+| ![RSS feed in Thunderbird](images/OPM_rss-img1.png) | ![Chapter with cover image](images/OPM_rss-img2.png) |
+
+---
+
 ### How to Subscribe
 
 **Thunderbird:**
