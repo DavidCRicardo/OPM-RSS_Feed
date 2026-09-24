@@ -22,18 +22,22 @@ Output structure (opm.json):
 """
 
 import json
+import os
 import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright, BrowserContext
 
 SERIES_ID = "01J76XY7KT7J224EBK6J816Y1Q"
-CHAPTER_LIST_URL = f"https://weebcentral.com/series/{SERIES_ID}/full-chapter-list"
+BASE_URL = "https://weebcentral.com"
+CHAPTER_LIST_URL = f"{BASE_URL}/series/{SERIES_ID}/full-chapter-list"
 OUTPUT_FILE = Path(__file__).parent / "opm.json"
 REQUEST_DELAY = 0.5  # seconds between chapter detail requests
+RETRY_RECENT = 5  # newest chapters whose missing cover is re-fetched on every run
 
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -102,7 +106,8 @@ def fetch_chapter_list(ctx: BrowserContext) -> list[dict]:
 
     links = soup.find_all("a", href=True)
     for a in links:
-        href = a.get("href", "")
+        # WeebCentral switched to relative hrefs ("/chapters/...") in Sep 2026
+        href = urljoin(BASE_URL, a.get("href", ""))
         if "/chapters/" not in href:
             continue
 
@@ -237,7 +242,28 @@ def main() -> None:
             if i < len(new_chapters):
                 time.sleep(REQUEST_DELAY)
 
+        # 4b. Re-fetch details for recent chapters whose cover is missing
+        #     (e.g. a failed fetch when they were first seen)
+        recent = sorted(listing, key=lambda ch: float(ch["chapter_number"]), reverse=True)[:RETRY_RECENT]
+        repaired = 0
+        for ch in recent:
+            num = ch["chapter_number"]
+            entry = chapters_db.get(num)
+            if not entry or entry.get("cover_image"):
+                continue
+            print(f"  Retrying missing cover for Ch. {num} ...")
+            details = fetch_chapter_details(ctx, ch["url"])
+            if details["cover_image"]:
+                entry["cover_image"] = details["cover_image"]
+                entry["pages"] = details["pages"] or entry.get("pages")
+                repaired += 1
+            time.sleep(REQUEST_DELAY)
+
         browser.close()
+
+    if repaired:
+        print(f"Repaired details for {repaired} chapter(s).")
+        save_json({"chapters": chapters_db})
 
     # 5. Also update release_date / last_updated for existing chapters
     #    (in case WeebCentral updated a timestamp), but keep existing details.
@@ -263,6 +289,13 @@ def main() -> None:
 
     print(f"\nDone. opm.json contains {len(chapters_db)} chapters.")
     print(f"Saved to {OUTPUT_FILE}")
+
+    # Tell the workflow whether anything worth committing happened
+    github_output = os.environ.get("GITHUB_OUTPUT")
+    if github_output:
+        with open(github_output, "a", encoding="utf-8") as f:
+            f.write(f"new_chapters={len(new_chapters)}\n")
+            f.write(f"repaired={repaired}\n")
 
 
 if __name__ == "__main__":

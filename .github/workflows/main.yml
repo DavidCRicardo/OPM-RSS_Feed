@@ -32,12 +32,14 @@ jobs:
         run: playwright install chromium --with-deps
 
       - name: Scrape WeebCentral and update opm.json
+        id: scrape
         run: python scrape_weebcentral.py
 
       - name: Generate fresh opm.rss
         run: python generate_rss.py
 
       - name: Commit & push if changed
+        if: steps.scrape.outputs.new_chapters != '0' || steps.scrape.outputs.repaired != '0'
         run: |
           git config user.name "OPM Auto Bot"
           git config user.email "bot@noreply.com"
